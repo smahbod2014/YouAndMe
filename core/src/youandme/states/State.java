@@ -17,6 +17,7 @@ public abstract class State {
 		this.mouse = new Vector3();
 		this.camera = new OrthographicCamera();
 		camera.setToOrtho(false, YouAndMe.WIDTH, YouAndMe.HEIGHT);
+		camera.update();
 	}
 	
 	public abstract void handleInput();
