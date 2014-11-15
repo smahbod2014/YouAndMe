@@ -23,7 +23,13 @@ public class MenuState extends State {
 	public void handleInput() {
 		// TODO Auto-generated method stub
 		if(Gdx.input.isTouched()) {
+			mouse.x = Gdx.input.getX();
+			mouse.y = Gdx.input.getY();
+			camera.unproject(mouse);
 			
+			if(playButton.contains(mouse.x, mouse.y)) {
+				gsm.set(new PlayState(gsm));
+			}
 		}
 	}
 
@@ -35,6 +41,7 @@ public class MenuState extends State {
 
 	@Override
 	public void render(SpriteBatch sb) {
+		sb.setProjectionMatrix(camera.combined);
 		YouAndMe.ff.render(sb, title, YouAndMe.WIDTH / 2, YouAndMe.HEIGHT *3/4, 1);
 		YouAndMe.ff.render(sb, playButton.text, playButton.x, playButton.y, 1);
 	}

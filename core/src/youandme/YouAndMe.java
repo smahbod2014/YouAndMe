@@ -13,8 +13,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class YouAndMe extends ApplicationAdapter {
 	
-	public static float WIDTH = 480;
-	public static float HEIGHT = 480;
+	public static float WIDTH = 800;
+	public static float HEIGHT = 600;
 	public static final String TITLE = "You & Me";
 	
 	public static FontFactory ff;
