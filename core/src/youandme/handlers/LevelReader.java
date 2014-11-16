@@ -29,6 +29,7 @@ public class LevelReader {
 	private static Player player;
 	private static Player lover;
 	private static int size;
+	private static int debugIndex = 1;
 	public static int level;
 	
 	public static Array<GameTile> getBase() {
@@ -64,6 +65,7 @@ public class LevelReader {
 			Gdx.app.exit();
 		}
 		
+		debugIndex = 1;
 		LevelReader.level = level;
 		
 		base = new Array<GameTile>();
@@ -121,7 +123,7 @@ public class LevelReader {
 				if (layer.getCell(col, row) != null) {
 					float adjustedX = col * ADJUSTED_TILE_SIZE;
 					float adjustedY = row * ADJUSTED_TILE_SIZE;
-					list.add(new GameTile(layer.getCell(col, row).getTile().getTextureRegion(), adjustedX, adjustedY, property));
+					list.add(new GameTile(layer.getCell(col, row).getTile().getTextureRegion(), adjustedX, adjustedY, property, debugIndex++));
 				}
 			}
 		}

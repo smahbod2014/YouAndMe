@@ -38,10 +38,10 @@ public class YouAndMe extends ApplicationAdapter {
 		ff = new FontFactory(new TextureRegion(new Texture(Gdx.files.internal("fonts/testfont.png"))));
 		bg = new Background(new TextureRegion(new Texture(Gdx.files.internal("youandme_clouds_200x150.png"))), 0, 0);
 		hud = new HUD();
-		TextureRegion healthBars = new TextureRegion(new Texture(Gdx.files.internal("youandme_healthbar_64x32.png")));
-		TextureRegion[][] sheet = healthBars.split(64, 32);
+		TextureRegion healthBars = new TextureRegion(new Texture(Gdx.files.internal("youandme_healthbar_96x32.png")));
+		TextureRegion[][] sheet = healthBars.split(96, 32);
 		hud.addHealthBar(new HealthBar(sheet[0][0], 75, 50));
-		hud.addHealthBar(new HealthBar(sheet[1][0], 550, 450));
+		hud.addHealthBar(new HealthBar(sheet[1][0], 450, 450));
 		
 		
 		sb = new SpriteBatch();

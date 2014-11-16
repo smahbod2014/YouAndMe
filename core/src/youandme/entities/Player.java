@@ -22,6 +22,7 @@ public class Player extends Entity {
 	private float distanceAccum;
 	private float oldX;
 	private float oldY;
+	private float bobDelay = .5f;
 	private float hurtAnimationDelay = .125f;
 	private float hurtTimer;
 	private float hurtMaxTimer = hurtAnimationDelay * 5;
@@ -32,7 +33,10 @@ public class Player extends Entity {
 		this.y = y;
 		this.normalRow = normalRow;
 		TextureRegion tr = new TextureRegion(new Texture(Gdx.files.internal("youandme_hearts_32.png")));
-		this.animation = new Animation(tr, 0);
+		this.animation = new Animation(tr, bobDelay);
+		animation.setMaxFrames(2);
+		animation.setRow(normalRow);
+		animation.start();
 		this.speed = 200;
 		motion = new boolean[4];
 		oldX = x;
@@ -55,6 +59,7 @@ public class Player extends Entity {
 		animation.setRow(row);
 		animation.setDelay(.125f);
 		hurtTimer = hurtMaxTimer;
+		animation.setMaxFrames(5);
 		animation.start();
 	}
 	
@@ -62,7 +67,9 @@ public class Player extends Entity {
 		oldX = x;
 		oldY = y;
 		motion[dir] = b;
-		if (b) {
+		if (b && !checkCollisions(dir)) {
+			animation.resetFrame();
+			animation.stop();
 			inMotion = true;
 		}
 	}
@@ -94,73 +101,68 @@ public class Player extends Entity {
 		}
 	}
 	
-	public void checkCollisions() {
+	public boolean checkCollisions(int dir) {
 		int normalX = (int) MathUtils.round(x / ADJUSTED_TILE_SIZE);
 		int normalY = (int) MathUtils.round(y / ADJUSTED_TILE_SIZE);
 		
-		if (motion[C.DIRECTION_LEFT]) {
-			
+		if (dir == C.DIRECTION_LEFT) {	
 			for (Wall wall : walls) {
 				int normalWallX = (int) MathUtils.round(wall.x / ADJUSTED_TILE_SIZE);
 				int normalWallY = (int) MathUtils.round(wall.y / ADJUSTED_TILE_SIZE);
 				if (normalX - 1 == normalWallX && normalY == normalWallY) {
 					clearMotion(false);
-					return;
+					return true;
 				}
 			}
-		}
-		
-		if (motion[C.DIRECTION_DOWN]) {
+		} else if (dir == C.DIRECTION_DOWN) {
 			for (Wall wall : walls) {
 				int normalWallX = (int) MathUtils.round(wall.x / ADJUSTED_TILE_SIZE);
 				int normalWallY = (int) MathUtils.round(wall.y / ADJUSTED_TILE_SIZE);
 				if (normalX == normalWallX && normalY - 1 == normalWallY) {
 					clearMotion(false);
-					return;
+					return true;
 				}
 			}
-		}
-		
-		if (motion[C.DIRECTION_RIGHT]) {
+		} else if (dir == C.DIRECTION_RIGHT) {
 			for (Wall wall : walls) {
 				int normalWallX = (int) MathUtils.round(wall.x / ADJUSTED_TILE_SIZE);
 				int normalWallY = (int) MathUtils.round(wall.y / ADJUSTED_TILE_SIZE);
 				if (normalX + 1 == normalWallX && normalY == normalWallY) {
 					clearMotion(false);
-					return;
+					return true;
 				}
 			}
-		}
-		
-		if (motion[C.DIRECTION_UP]) {
+		} else if (dir == C.DIRECTION_UP) {
 			for (Wall wall : walls) {
 				int normalWallX = (int) MathUtils.round(wall.x / ADJUSTED_TILE_SIZE);
 				int normalWallY = (int) MathUtils.round(wall.y / ADJUSTED_TILE_SIZE);
 				if (normalX == normalWallX && normalY + 1 == normalWallY) {
 					clearMotion(false);
-					return;
+					return true;
 				}
 			}
 		}
+		
+		return false;
 	}
 	
 	private void clearMotion(boolean normalize) {
 		//normalize position, AKA make sure we are set to an actual grid position
 		if (normalize) {
 			if (motion[C.DIRECTION_LEFT]) {
-				x = oldX - ADJUSTED_TILE_SIZE;
+				x = oldX - distanceNeeded;
 			}
 			
 			if (motion[C.DIRECTION_DOWN]) {
-				y = oldY - ADJUSTED_TILE_SIZE;
+				y = oldY - distanceNeeded;
 			}
 			
 			if (motion[C.DIRECTION_RIGHT]) {
-				x = oldX + ADJUSTED_TILE_SIZE;
+				x = oldX + distanceNeeded;
 			}
 			
 			if (motion[C.DIRECTION_UP]) {
-				y = oldY + ADJUSTED_TILE_SIZE;
+				y = oldY + distanceNeeded;
 			}
 		}
 		
@@ -170,6 +172,11 @@ public class Player extends Entity {
 		
 		distanceAccum = 0;
 		inMotion = false;
+		printPosition();
+		if (!animation.isRunning()) {
+			animation.setMaxFrames(2);
+			animation.start();
+		}
 	}
 	
 	public void printWalls() {
@@ -195,7 +202,8 @@ public class Player extends Entity {
 			if (hurtTimer <= 0) {
 				hurtTimer = 0;
 				animation.setRow(normalRow);
-				animation.stop();
+				animation.setDelay(bobDelay);
+				animation.setMaxFrames(2);
 			}
 		}
 	}

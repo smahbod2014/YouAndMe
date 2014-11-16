@@ -14,6 +14,7 @@ public class Wall extends Entity {
 	private final float rotateDistanceNeeded = pi/2;
 	public final int type;
 	public int direction;
+	public int debugIndex;
 	public boolean rotating;
 	private float rotationAccum;
 	
@@ -22,13 +23,14 @@ public class Wall extends Entity {
 		this.y = gt.y;
 		this.animation = new Animation(gt.tr, 0);
 		this.type = gt.property;
+		this.debugIndex = gt.debugIndex;
 	}
 	
 	private void rotate(float dt, float originX, float originY) {
 		float adjX = x + ADJUSTED_TILE_SIZE / 2;
 		float adjY = y + ADJUSTED_TILE_SIZE / 2;
 		float radius = (float) Math.sqrt(Math.pow(originX - adjX, 2) + Math.pow(originY - adjY, 2));
-		float angle = MathUtils.atan2(originY - adjY, originX - adjX);
+		float angle = MathUtils.atan2(adjY - originY, adjX - originX);
 		if (angle < 0)
 			angle += 2*pi;
 		float nextAngle = direction * rotateDistanceNeeded * dt / rotationTime;

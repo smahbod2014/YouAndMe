@@ -13,12 +13,14 @@ public class Animation {
 	private float delay;
 	private int row;
 	private int current;
+	private int maxFrames;
 	private boolean running;
 	
 	public Animation(TextureRegion sheet, float delay) {
 		this.sheet = sheet.split((int) TILE_SIZE, (int) TILE_SIZE);
 		this.delay = delay;
 		this.delayTimer = delay;
+		this.maxFrames = this.sheet[0].length;
 	}
 	
 	public void start() {
@@ -28,6 +30,10 @@ public class Animation {
 	
 	public void stop() {
 		running = false;
+	}
+	
+	public boolean isRunning() {
+		return running;
 	}
 	
 	public void setDelay(float d) {
@@ -51,12 +57,19 @@ public class Animation {
 		setFrame(0);
 	}
 	
+	public void setMaxFrames(int max) {
+		this.maxFrames = max;
+	}
+	
 	public void update(float dt) {
 		if (running && delayTimer > 0) {
 			delayTimer -= dt;
 			if (delayTimer <= 0) {
 				delayTimer = delay;
-				current = (current + 1) % sheet[row].length;
+				current++;
+				if (current == maxFrames) {
+					current = 0;
+				}
 			}
 		}
 	}

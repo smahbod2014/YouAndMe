@@ -2,6 +2,7 @@ package youandme.entities;
 
 import youandme.YouAndMe;
 import youandme.handlers.Animation;
+import youandme.states.PlayState;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,7 +15,7 @@ public class VictoryHeart extends Entity {
 		this.x = x;
 		this.y = y;
 		TextureRegion tr = new TextureRegion(new Texture(Gdx.files.internal("youandme_hearts_32.png")));
-		animation = new Animation(tr, duration / ((int) (tr.getRegionWidth() / YouAndMe.TILE_SIZE)));
+		animation = new Animation(tr, duration / 10);
 		animation.setRow(6);
 		animation.start();
 	}
@@ -29,6 +30,6 @@ public class VictoryHeart extends Entity {
 
 	@Override
 	public void render(SpriteBatch sb) {
-		animation.render(sb, x, y);
+		animation.render(sb, x + PlayState.fixPosX, y + PlayState.fixPosY);
 	}
 }

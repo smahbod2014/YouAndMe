@@ -35,7 +35,8 @@ public class PlayState extends State {
 	private Player player;
 	private Player lover;
 	private VictoryHeart vh;
-	private float victoryMaxTimer = 2;
+	private boolean midTileVictory;
+	private float victoryMaxTimer = 2f;
 	
 	public PlayState(GSM gsm) {
 		super(gsm);
@@ -55,11 +56,6 @@ public class PlayState extends State {
 		fixPosY = HEIGHT / 2 - LevelReader.getSize() * ADJUSTED_TILE_SIZE / 2;
 	}
 	
-	private void checkCollisions() {
-		player.checkCollisions();
-		lover.checkCollisions();
-	}
-	
 	private void setRotating(boolean b, int d) {
 		rotating = b;
 		for (Wall wall : walls) {
@@ -68,36 +64,32 @@ public class PlayState extends State {
 		}
 	}
 	
-	private void checkWinCondition(int dir) {
+	private void preemptiveWinConditionCheck(int dir) {
 		if (dir == C.DIRECTION_LEFT) {
-			if (player.getNormalX() - 1 == lover.getNormalX() + 1 && player.getNormalY() == lover.getNormalY()) {
-				victory = true;
-			} else if (player.getNormalX() - 1 == lover.getNormalX() && player.getNormalY() == lover.getNormalY()) {
-				victory = true;
-				player.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
-				lover.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
+			if (player.getNormalX() - 1 == lover.getNormalX() && player.getNormalY() == lover.getNormalY()) {
+				//victory = true;
+				midTileVictory = true;
+				player.distanceNeeded = ADJUSTED_TILE_SIZE * 3 / 4;
+				lover.distanceNeeded = ADJUSTED_TILE_SIZE * 3 / 4;
 			}
 		} else if (dir == C.DIRECTION_DOWN) {
-			if (player.getNormalX() == lover.getNormalX() && player.getNormalY() - 1 == lover.getNormalY() + 1) {
-				victory = true;
-			} else if (player.getNormalX() == lover.getNormalX() && player.getNormalY() - 1 == lover.getNormalY()) {
-				victory = true;
+			if (player.getNormalX() == lover.getNormalX() && player.getNormalY() - 1 == lover.getNormalY()) {
+				//victory = true;
+				midTileVictory = true;
 				player.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
 				lover.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
 			}
 		} else if (dir == C.DIRECTION_RIGHT) {
-			if (player.getNormalX() + 1 == lover.getNormalX() - 1 && player.getNormalY() == lover.getNormalY()) {
-				victory = true;
-			} else if (player.getNormalX() + 1 == lover.getNormalX() && player.getNormalY() == lover.getNormalY()) {
-				victory = true;
+			if (player.getNormalX() + 1 == lover.getNormalX() && player.getNormalY() == lover.getNormalY()) {
+				//victory = true;
+				midTileVictory = true;
 				player.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
 				lover.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
 			}
 		} else if (dir == C.DIRECTION_UP) {
-			if (player.getNormalX() == lover.getNormalX() && player.getNormalY() + 1 == lover.getNormalY() - 1) {
-				victory = true;
-			} else if (player.getNormalX() == lover.getNormalX() && player.getNormalY() + 1 == lover.getNormalY()) {
-				victory = true;
+			if (player.getNormalX() == lover.getNormalX() && player.getNormalY() + 1 == lover.getNormalY()) {
+				//victory = true;
+				midTileVictory = true;
 				player.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
 				lover.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
 			}
@@ -110,29 +102,25 @@ public class PlayState extends State {
 			if (Gdx.input.isKeyPressed(Keys.LEFT)) {
 				player.setMotion(C.DIRECTION_LEFT, true);
 				lover.setMotion(C.DIRECTION_RIGHT, true);
-				checkWinCondition(C.DIRECTION_LEFT);
-				checkCollisions();
+				preemptiveWinConditionCheck(C.DIRECTION_LEFT);
 			}
 			
 			else if (Gdx.input.isKeyPressed(Keys.DOWN)) {
 				player.setMotion(C.DIRECTION_DOWN, true);
 				lover.setMotion(C.DIRECTION_UP, true);
-				checkWinCondition(C.DIRECTION_DOWN);
-				checkCollisions();
+				preemptiveWinConditionCheck(C.DIRECTION_DOWN);
 			}
 			
 			else if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
 				player.setMotion(C.DIRECTION_RIGHT, true);
 				lover.setMotion(C.DIRECTION_LEFT, true);
-				checkWinCondition(C.DIRECTION_RIGHT);
-				checkCollisions();
+				preemptiveWinConditionCheck(C.DIRECTION_RIGHT);
 			}
 			
 			else if (Gdx.input.isKeyPressed(Keys.UP)) {
 				player.setMotion(C.DIRECTION_UP, true);
 				lover.setMotion(C.DIRECTION_DOWN, true);
-				checkWinCondition(C.DIRECTION_UP);
-				checkCollisions();
+				preemptiveWinConditionCheck(C.DIRECTION_UP);
 			}
 		}
 		
@@ -186,7 +174,14 @@ public class PlayState extends State {
 			setRotating(rotate, CLOCKWISE);
 		}
 		
-		if (victory && !player.inMotion && !lover.inMotion) {
+		if (!midTileVictory && !victory && player.getNormalX() == lover.getNormalX() && player.getNormalY() == lover.getNormalY()
+				&& !player.inMotion && !lover.inMotion) {
+			victory = true;
+			vh = new VictoryHeart(player.x, player.y, victoryMaxTimer);
+		}
+		
+		if (!victory && midTileVictory && !player.inMotion && !lover.inMotion) {
+			victory = true;
 			vh = new VictoryHeart(player.x, player.y, victoryMaxTimer);
 		}
 	}
@@ -219,12 +214,10 @@ public class PlayState extends State {
 		}
 		sr.end();
 		
-		if (!victory) {
+		if (vh == null) {
 			player.render(sb);
 			lover.render(sb);
-		}
-		
-		if (vh != null) {
+		} else {
 			vh.render(sb);
 		}
 		
