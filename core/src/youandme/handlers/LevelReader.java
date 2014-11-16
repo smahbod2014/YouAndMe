@@ -105,13 +105,13 @@ public class LevelReader {
 	private static void createPlayer(Element playerElement) {
 		float x = Float.parseFloat(playerElement.getAttribute("x")) * ADJUSTED_TILE_SIZE;
 		float y = Float.parseFloat(playerElement.getAttribute("y")) * ADJUSTED_TILE_SIZE;
-		player = new Player(x, y);
+		player = new Player(x, y, 0);
 	}
 	
 	private static void createLover(Element playerElement) {
 		float x = Float.parseFloat(playerElement.getAttribute("x")) * ADJUSTED_TILE_SIZE;
 		float y = Float.parseFloat(playerElement.getAttribute("y")) * ADJUSTED_TILE_SIZE;
-		lover = new Player(x, y);
+		lover = new Player(x, y, 3);
 	}
 
 	private static void populateLayer(TiledMap map, Array<GameTile> list, String name, int property) {

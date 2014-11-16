@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="7" height="7" tilewidth="32" tileheight="32">
- <tileset firstgid="1" name="SliderTileset" tilewidth="32" tileheight="32">
-  <image source="SliderTileset.png" width="128" height="160"/>
+ <tileset firstgid="1" name="youandme_tilesheet_32" tilewidth="32" tileheight="32">
+  <image source="../youandme_tilesheet_32.png" width="96" height="32"/>
  </tileset>
  <layer name="base" width="7" height="7">
   <data encoding="base64" compression="zlib">
-   eJxjYMAPmLHggZLDBQAeEABM
+   eJxjZmBgYB7iGAA6MACU
   </data>
  </layer>
  <layer name="border" width="7" height="7">
   <data encoding="base64" compression="zlib">
-   eJxjYWBgYMGDsYGBksOFASZEAGE=
+   eJxjYmBgYMKDsYGBksOFAROEADE=
   </data>
  </layer>
  <layer name="walls" width="7" height="7">
   <data encoding="base64" compression="zlib">
-   eJxjYMAPWJAwNjlcaliwyOMyE5fZuOxFBwAc5ABJ
+   eJxjYMAPGJEwNjlcahixyOMyE5fZuOxFBwAHzAAT
   </data>
  </layer>
 </map>

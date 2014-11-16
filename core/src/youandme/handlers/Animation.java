@@ -23,6 +23,7 @@ public class Animation {
 	
 	public void start() {
 		running = true;
+		delayTimer = delay;
 	}
 	
 	public void stop() {
@@ -35,6 +36,11 @@ public class Animation {
 	
 	public void setRow(int row) {
 		this.row = row;
+		resetFrame();
+	}
+	
+	public int getCurrentFrame() {
+		return current;
 	}
 	
 	public void setFrame(int current) {

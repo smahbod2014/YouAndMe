@@ -15,28 +15,28 @@ import com.badlogic.gdx.utils.Array;
 
 public class Player extends Entity {
 
-	private final float distanceNeeded = YouAndMe.ADJUSTED_TILE_SIZE;
+	public float distanceNeeded = YouAndMe.ADJUSTED_TILE_SIZE;
 	private Array<Wall> walls;
 	private boolean[] motion;
+	private int normalRow;
 	private float distanceAccum;
 	private float oldX;
 	private float oldY;
+	private float hurtAnimationDelay = .125f;
+	private float hurtTimer;
+	private float hurtMaxTimer = hurtAnimationDelay * 5;
 	public boolean inMotion;
 	
-	public Player(float x, float y) {
+	public Player(float x, float y, int normalRow) {
 		this.x = x;
 		this.y = y;
-		//TextureRegion tr = new TextureRegion(new Texture(Gdx.files.internal("INSERT ANIMATION SHEET HERE.png")));
-		TextureRegion tr = new TextureRegion(new Texture(Gdx.files.internal("testplayer.png")));
-		this.animation = new Animation(tr, .25f);
+		this.normalRow = normalRow;
+		TextureRegion tr = new TextureRegion(new Texture(Gdx.files.internal("youandme_hearts_32.png")));
+		this.animation = new Animation(tr, 0);
 		this.speed = 200;
 		motion = new boolean[4];
 		oldX = x;
 		oldY = y;
-	}
-	
-	public void setAnimation(int row) {
-		animation.setRow(row);
 	}
 	
 	public void playAnimation() {
@@ -49,6 +49,13 @@ public class Player extends Entity {
 	
 	public void setWalls(Array<Wall> walls) {
 		this.walls = walls;
+	}
+	
+	public void setHurt(int row) {
+		animation.setRow(row);
+		animation.setDelay(.125f);
+		hurtTimer = hurtMaxTimer;
+		animation.start();
 	}
 	
 	public void setMotion(int dir, boolean b) {
@@ -181,7 +188,16 @@ public class Player extends Entity {
 	
 	@Override
 	public void update(float dt) {
+		animation.update(dt);
 		movePlayer(dt);
+		if (hurtTimer > 0) {
+			hurtTimer -= dt;
+			if (hurtTimer <= 0) {
+				hurtTimer = 0;
+				animation.setRow(normalRow);
+				animation.stop();
+			}
+		}
 	}
 
 	@Override
