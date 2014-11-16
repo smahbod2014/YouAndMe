@@ -1,5 +1,6 @@
 package youandme.states;
 
+import youandme.YouAndMe;
 import youandme.transitions.Transition;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,6 +27,7 @@ public class TransitionState extends State {
 	@Override
 	public void update(float dt) {
 		transition.update(dt);
+		YouAndMe.bg.update(dt);
 		if (transition.phase == 2) {
 			gsm.set(next);
 		}

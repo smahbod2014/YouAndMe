@@ -206,7 +206,7 @@ public class PlayState extends State {
 		}
 		sb.end();
 		
-		sr.begin(ShapeType.Line);
+		/*sr.begin(ShapeType.Line);
 		sr.setColor(0, 0, 0, 1);
 		float x = ADJUSTED_TILE_SIZE;
 		float y = LevelReader.getSize() * ADJUSTED_TILE_SIZE;
@@ -220,7 +220,7 @@ public class PlayState extends State {
 			sr.line(x + fixPosX, y + fixPosY, x + LevelReader.getSize() * ADJUSTED_TILE_SIZE + fixPosX, y + fixPosY);
 			y -= ADJUSTED_TILE_SIZE;
 		}
-		sr.end();
+		sr.end();*/
 		
 		if (vh == null) {
 			player.render(sb);

@@ -172,7 +172,6 @@ public class Player extends Entity {
 		
 		distanceAccum = 0;
 		inMotion = false;
-		printPosition();
 		if (!animation.isRunning()) {
 			animation.setMaxFrames(2);
 			animation.start();
