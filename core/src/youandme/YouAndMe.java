@@ -15,7 +15,9 @@ public class YouAndMe extends ApplicationAdapter {
 	
 	public static float WIDTH = 800;
 	public static float HEIGHT = 600;
+	public static final float SCALE = WIDTH / HEIGHT;
 	public static final float TILE_SIZE = 32;
+	public static final float ADJUSTED_TILE_SIZE = SCALE * TILE_SIZE;
 	public static final String TITLE = "You & Me";
 	
 	public static FontFactory ff;

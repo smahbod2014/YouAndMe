@@ -1,6 +1,7 @@
 package youandme.handlers;
 
-import youandme.YouAndMe;
+import static youandme.YouAndMe.*;
+import youandme.entities.Entity;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,7 +16,7 @@ public class Animation {
 	private boolean running;
 	
 	public Animation(TextureRegion sheet, float delay) {
-		this.sheet = sheet.split((int) YouAndMe.TILE_SIZE, (int) YouAndMe.TILE_SIZE);
+		this.sheet = sheet.split((int) TILE_SIZE, (int) TILE_SIZE);
 		this.delay = delay;
 		this.delayTimer = delay;
 	}
@@ -56,7 +57,7 @@ public class Animation {
 	
 	public void render(SpriteBatch sb, float x, float y) {
 		sb.begin();
-		sb.draw(sheet[row][current], x, y, YouAndMe.TILE_SIZE, YouAndMe.TILE_SIZE);
+		sb.draw(sheet[row][current], x, y, ADJUSTED_TILE_SIZE, ADJUSTED_TILE_SIZE);
 		sb.end();
 	}
 }

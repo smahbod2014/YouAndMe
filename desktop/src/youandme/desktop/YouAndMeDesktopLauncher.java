@@ -10,7 +10,7 @@ public class YouAndMeDesktopLauncher {
 		config.width = (int) Math.ceil(YouAndMe.WIDTH);
 		config.height = (int) Math.ceil(YouAndMe.HEIGHT);
 		config.title = YouAndMe.TITLE;
-		//config.y = 0;
+		config.y = 0;
 		new LwjglApplication(new YouAndMe(), config);
 	}
 }
