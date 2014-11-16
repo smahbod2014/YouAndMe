@@ -11,4 +11,8 @@ public class C {
 	//wall types
 	public static final int WALL_REGULAR = 0;
 	public static final int WALL_BORDER = 1;
+	
+	//button ids
+	public static final int BUTTON_PLAY = 0;
+	public static final int BUTTON_QUIT = 1;
 }

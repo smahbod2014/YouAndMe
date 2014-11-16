@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class FontFactory {
 
-	private final int FONT_SIZE = 32;
+	private final int FONT_SIZE = 16;
 	private TextureRegion[][] sheet;
 	private int cols;
 	

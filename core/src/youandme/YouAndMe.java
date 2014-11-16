@@ -35,7 +35,7 @@ public class YouAndMe extends ApplicationAdapter {
 	public void create () {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		
-		ff = new FontFactory(new TextureRegion(new Texture(Gdx.files.internal("fonts/testfont.png"))));
+		ff = new FontFactory(new TextureRegion(new Texture(Gdx.files.internal("fonts/font1_16.png"))));
 		bg = new Background(new TextureRegion(new Texture(Gdx.files.internal("youandme_clouds_200x150.png"))), 0, 0);
 		hud = new HUD();
 		TextureRegion healthBars = new TextureRegion(new Texture(Gdx.files.internal("youandme_healthbar_96x32.png")));

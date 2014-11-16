@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class Wall extends Entity {
 
-	private final float rotationTime = 1;
+	private final float rotationTime = .5f;
 	private final float rotateDistanceNeeded = pi/2;
 	public final int type;
 	public int direction;

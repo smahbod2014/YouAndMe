@@ -35,12 +35,13 @@ public class PlayState extends State {
 	private Player player;
 	private Player lover;
 	private VictoryHeart vh;
+	private int previousRotationDirection;
 	private boolean midTileVictory;
 	private float victoryMaxTimer = 2f;
 	
-	public PlayState(GSM gsm) {
+	public PlayState(GSM gsm, int level) {
 		super(gsm);
-		LevelReader.load(2);
+		LevelReader.load(level);
 		player = LevelReader.getPlayer();
 		lover = LevelReader.getLover();
 		walls = new Array<Wall>();
@@ -58,6 +59,7 @@ public class PlayState extends State {
 	
 	private void setRotating(boolean b, int d) {
 		rotating = b;
+		previousRotationDirection = d;
 		for (Wall wall : walls) {
 			wall.rotating = b;
 			wall.direction = d;
@@ -67,28 +69,24 @@ public class PlayState extends State {
 	private void preemptiveWinConditionCheck(int dir) {
 		if (dir == C.DIRECTION_LEFT) {
 			if (player.getNormalX() - 1 == lover.getNormalX() && player.getNormalY() == lover.getNormalY()) {
-				//victory = true;
 				midTileVictory = true;
 				player.distanceNeeded = ADJUSTED_TILE_SIZE * 3 / 4;
 				lover.distanceNeeded = ADJUSTED_TILE_SIZE * 3 / 4;
 			}
 		} else if (dir == C.DIRECTION_DOWN) {
 			if (player.getNormalX() == lover.getNormalX() && player.getNormalY() - 1 == lover.getNormalY()) {
-				//victory = true;
 				midTileVictory = true;
 				player.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
 				lover.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
 			}
 		} else if (dir == C.DIRECTION_RIGHT) {
 			if (player.getNormalX() + 1 == lover.getNormalX() && player.getNormalY() == lover.getNormalY()) {
-				//victory = true;
 				midTileVictory = true;
 				player.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
 				lover.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
 			}
 		} else if (dir == C.DIRECTION_UP) {
 			if (player.getNormalX() == lover.getNormalX() && player.getNormalY() + 1 == lover.getNormalY()) {
-				//victory = true;
 				midTileVictory = true;
 				player.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
 				lover.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
@@ -124,11 +122,16 @@ public class PlayState extends State {
 			}
 		}
 		
-		if (!rotating && Gdx.input.isKeyJustPressed(Keys.SPACE)) {
+		if (!rotating && Gdx.input.isKeyJustPressed(Keys.Z)) {
 			rotating = true;
 			originX = MathUtils.round(LevelReader.getSize() / 2f * ADJUSTED_TILE_SIZE);
 			originY = MathUtils.round(LevelReader.getSize() / 2f * ADJUSTED_TILE_SIZE);
 			setRotating(true, COUNTER_CLOCKWISE);
+		} else if (!rotating && Gdx.input.isKeyJustPressed(Keys.X)) {
+			rotating = true;
+			originX = MathUtils.round(LevelReader.getSize() / 2f * ADJUSTED_TILE_SIZE);
+			originY = MathUtils.round(LevelReader.getSize() / 2f * ADJUSTED_TILE_SIZE);
+			setRotating(true, CLOCKWISE);
 		}
 	}
 
@@ -171,7 +174,12 @@ public class PlayState extends State {
 				}
 			}
 			
-			setRotating(rotate, CLOCKWISE);
+			if (previousRotationDirection == CLOCKWISE) {
+				setRotating(rotate, COUNTER_CLOCKWISE);
+			} else {
+				setRotating(rotate, CLOCKWISE);
+			}
+			
 		}
 		
 		if (!midTileVictory && !victory && player.getNormalX() == lover.getNormalX() && player.getNormalY() == lover.getNormalY()
