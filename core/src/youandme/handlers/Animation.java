@@ -45,6 +45,10 @@ public class Animation {
 		resetFrame();
 	}
 	
+	public int getRow() {
+		return row;
+	}
+	
 	public int getCurrentFrame() {
 		return current;
 	}

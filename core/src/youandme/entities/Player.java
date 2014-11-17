@@ -1,15 +1,13 @@
 package youandme.entities;
 
-import static youandme.YouAndMe.*;
+import static youandme.YouAndMe.ADJUSTED_TILE_SIZE;
+import static youandme.YouAndMe.SCALE;
 import youandme.YouAndMe;
 import youandme.handlers.Animation;
 import youandme.handlers.C;
 import youandme.states.PlayState;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
@@ -32,8 +30,7 @@ public class Player extends Entity {
 		this.x = x;
 		this.y = y;
 		this.normalRow = normalRow;
-		TextureRegion tr = new TextureRegion(new Texture(Gdx.files.internal("youandme_hearts_32.png")));
-		this.animation = new Animation(tr, bobDelay);
+		this.animation = new Animation(YouAndMe.res.getTexture("hearts"), bobDelay);
 		animation.setMaxFrames(2);
 		animation.setRow(normalRow);
 		animation.start();
@@ -55,12 +52,22 @@ public class Player extends Entity {
 		this.walls = walls;
 	}
 	
-	public void setHurt(int row) {
+	public void setHurt(int row, int healthbar) {
 		animation.setRow(row);
 		animation.setDelay(.125f);
 		hurtTimer = hurtMaxTimer;
 		animation.setMaxFrames(5);
 		animation.start();
+		
+		YouAndMe.hud.modifyHealthBar(healthbar, -1);
+	}
+	
+	public void setDead(int row) {
+		animation.setRow(row);
+		animation.setDelay(.125f);
+		animation.setMaxFrames(5);
+		animation.start();
+		hurtTimer = 0;
 	}
 	
 	public void setMotion(int dir, boolean b) {
@@ -172,7 +179,6 @@ public class Player extends Entity {
 		
 		distanceAccum = 0;
 		inMotion = false;
-		printPosition();
 		if (!animation.isRunning()) {
 			animation.setMaxFrames(2);
 			animation.start();
@@ -204,6 +210,12 @@ public class Player extends Entity {
 				animation.setRow(normalRow);
 				animation.setDelay(bobDelay);
 				animation.setMaxFrames(2);
+			}
+		}
+		
+		if (animation.getRow() == 2 || animation.getRow() == 5) {
+			if (animation.getCurrentFrame() == 4) {
+				animation.stop();
 			}
 		}
 	}

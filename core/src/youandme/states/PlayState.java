@@ -28,19 +28,20 @@ public class PlayState extends State {
 	public static float originX;
 	public static float originY;
 	public static boolean rotating;
-	public static boolean victory;
-	public static float victoryDistance;
+	public boolean victory;
+	public float victoryDistance;
 	private ShapeRenderer sr = new ShapeRenderer();
 	private Array<Wall> walls;
 	private Player player;
 	private Player lover;
 	private VictoryHeart vh;
+	private int previousRotationDirection;
 	private boolean midTileVictory;
 	private float victoryMaxTimer = 2f;
 	
-	public PlayState(GSM gsm) {
+	public PlayState(GSM gsm, int level) {
 		super(gsm);
-		LevelReader.load(2);
+		LevelReader.load(level);
 		player = LevelReader.getPlayer();
 		lover = LevelReader.getLover();
 		walls = new Array<Wall>();
@@ -52,12 +53,17 @@ public class PlayState extends State {
 		}
 		player.setWalls(walls);
 		lover.setWalls(walls);
+		YouAndMe.hud.reset();
 		fixPosX = WIDTH / 2 - LevelReader.getSize() * ADJUSTED_TILE_SIZE / 2;
 		fixPosY = HEIGHT / 2 - LevelReader.getSize() * ADJUSTED_TILE_SIZE / 2;
+		originX = MathUtils.round(LevelReader.getSize() / 2f * ADJUSTED_TILE_SIZE);
+		originY = MathUtils.round(LevelReader.getSize() / 2f * ADJUSTED_TILE_SIZE);
+		rotating = false;
 	}
 	
 	private void setRotating(boolean b, int d) {
 		rotating = b;
+		previousRotationDirection = d;
 		for (Wall wall : walls) {
 			wall.rotating = b;
 			wall.direction = d;
@@ -67,37 +73,55 @@ public class PlayState extends State {
 	private void preemptiveWinConditionCheck(int dir) {
 		if (dir == C.DIRECTION_LEFT) {
 			if (player.getNormalX() - 1 == lover.getNormalX() && player.getNormalY() == lover.getNormalY()) {
-				//victory = true;
 				midTileVictory = true;
-				player.distanceNeeded = ADJUSTED_TILE_SIZE * 3 / 4;
-				lover.distanceNeeded = ADJUSTED_TILE_SIZE * 3 / 4;
+				player.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
+				lover.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
 			}
 		} else if (dir == C.DIRECTION_DOWN) {
 			if (player.getNormalX() == lover.getNormalX() && player.getNormalY() - 1 == lover.getNormalY()) {
-				//victory = true;
 				midTileVictory = true;
 				player.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
 				lover.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
 			}
 		} else if (dir == C.DIRECTION_RIGHT) {
 			if (player.getNormalX() + 1 == lover.getNormalX() && player.getNormalY() == lover.getNormalY()) {
-				//victory = true;
 				midTileVictory = true;
 				player.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
 				lover.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
 			}
 		} else if (dir == C.DIRECTION_UP) {
 			if (player.getNormalX() == lover.getNormalX() && player.getNormalY() + 1 == lover.getNormalY()) {
-				//victory = true;
 				midTileVictory = true;
 				player.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
 				lover.distanceNeeded = ADJUSTED_TILE_SIZE / 2;
 			}
 		}
 	}
+	
+	private void checkWinCondition() {
+		if (!midTileVictory && !victory && player.getNormalX() == lover.getNormalX() && player.getNormalY() == lover.getNormalY()
+				&& !player.inMotion && !lover.inMotion) {
+			victory = true;
+			vh = new VictoryHeart(player.x, player.y, victoryMaxTimer);
+		}
+		
+		if (!victory && midTileVictory && !player.inMotion && !lover.inMotion) {
+			victory = true;
+			vh = new VictoryHeart(player.x, player.y, victoryMaxTimer);
+		}
+		
+		if (victory) {
+			gsm.set(new VictoryState(gsm, this, vh));
+		}
+	}
 
 	@Override
 	public void handleInput() {
+		YouAndMe.hud.handleInput();
+		
+		if (Gdx.input.isKeyJustPressed(Keys.E)) {
+			gsm.set(new VictoryState(gsm, this, new VictoryHeart(player.x, player.y, victoryMaxTimer)));
+		}
 		if (!victory && !rotating && !player.inMotion && !lover.inMotion) {
 			if (Gdx.input.isKeyPressed(Keys.LEFT)) {
 				player.setMotion(C.DIRECTION_LEFT, true);
@@ -124,17 +148,17 @@ public class PlayState extends State {
 			}
 		}
 		
-		if (!rotating && Gdx.input.isKeyJustPressed(Keys.SPACE)) {
+		if (!rotating && Gdx.input.isKeyJustPressed(Keys.Z)) {
 			rotating = true;
-			originX = MathUtils.round(LevelReader.getSize() / 2f * ADJUSTED_TILE_SIZE);
-			originY = MathUtils.round(LevelReader.getSize() / 2f * ADJUSTED_TILE_SIZE);
 			setRotating(true, COUNTER_CLOCKWISE);
+		} else if (!rotating && Gdx.input.isKeyJustPressed(Keys.X)) {
+			rotating = true;
+			setRotating(true, CLOCKWISE);
 		}
 	}
 
 	@Override
 	public void update(float dt) {
-		
 		YouAndMe.bg.update(dt);
 		player.update(dt);
 		lover.update(dt);
@@ -160,29 +184,35 @@ public class PlayState extends State {
 					int normalWallX = (int) MathUtils.round(wall.x / ADJUSTED_TILE_SIZE);
 					int normalWallY = (int) MathUtils.round(wall.y / ADJUSTED_TILE_SIZE);
 					if (normalPlayerX == normalWallX && normalPlayerY == normalWallY) {
-						player.setHurt(1);
+						player.setHurt(1, 0);
 						rotate = true;
 					}
 					
 					if (normalLoverX == normalWallX && normalLoverY == normalWallY) {
-						lover.setHurt(4);
+						lover.setHurt(4, 1);
 						rotate = true;
 					}
 				}
 			}
 			
-			setRotating(rotate, CLOCKWISE);
+			if (previousRotationDirection == CLOCKWISE) {
+				setRotating(rotate, COUNTER_CLOCKWISE);
+			} else {
+				setRotating(rotate, CLOCKWISE);
+			}
+			
 		}
 		
-		if (!midTileVictory && !victory && player.getNormalX() == lover.getNormalX() && player.getNormalY() == lover.getNormalY()
-				&& !player.inMotion && !lover.inMotion) {
-			victory = true;
-			vh = new VictoryHeart(player.x, player.y, victoryMaxTimer);
-		}
+		checkWinCondition();
 		
-		if (!victory && midTileVictory && !player.inMotion && !lover.inMotion) {
-			victory = true;
-			vh = new VictoryHeart(player.x, player.y, victoryMaxTimer);
+		if (!(gsm.peek() instanceof DefeatState) && YouAndMe.hud.isGameOver()) {
+			if (YouAndMe.hud.isPlayerDead()) {
+				player.setDead(2);
+			}
+			if (YouAndMe.hud.isLoverDead()) {
+				lover.setDead(5);
+			}
+			gsm.set(new DefeatState(gsm, this));
 		}
 	}
 
@@ -198,7 +228,7 @@ public class PlayState extends State {
 		}
 		sb.end();
 		
-		sr.begin(ShapeType.Line);
+		/*sr.begin(ShapeType.Line);
 		sr.setColor(0, 0, 0, 1);
 		float x = ADJUSTED_TILE_SIZE;
 		float y = LevelReader.getSize() * ADJUSTED_TILE_SIZE;
@@ -212,7 +242,7 @@ public class PlayState extends State {
 			sr.line(x + fixPosX, y + fixPosY, x + LevelReader.getSize() * ADJUSTED_TILE_SIZE + fixPosX, y + fixPosY);
 			y -= ADJUSTED_TILE_SIZE;
 		}
-		sr.end();
+		sr.end();*/
 		
 		if (vh == null) {
 			player.render(sb);

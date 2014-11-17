@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <leveldata>
-    <map size="7"/>
+    <map size="6"/>
     <player x="1" y="1"/>
-    <lover x="5" y="5"/>
+    <lover x="4" y="4"/>
 </leveldata>

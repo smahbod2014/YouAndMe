@@ -1,5 +1,6 @@
 package youandme;
 
+import youandme.handlers.Resources;
 import youandme.states.GSM;
 import youandme.states.MenuState;
 import youandme.ui.Background;
@@ -10,9 +11,7 @@ import youandme.ui.HealthBar;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class YouAndMe extends ApplicationAdapter {
 	
@@ -26,6 +25,7 @@ public class YouAndMe extends ApplicationAdapter {
 	public static FontFactory ff;
 	public static Background bg;
 	public static HUD hud;
+	public static Resources res;
 	
 	private SpriteBatch sb;
 	
@@ -35,18 +35,20 @@ public class YouAndMe extends ApplicationAdapter {
 	public void create () {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		
-		ff = new FontFactory(new TextureRegion(new Texture(Gdx.files.internal("fonts/testfont.png"))));
-		bg = new Background(new TextureRegion(new Texture(Gdx.files.internal("youandme_clouds_200x150.png"))), 0, 0);
-		hud = new HUD();
-		TextureRegion healthBars = new TextureRegion(new Texture(Gdx.files.internal("youandme_healthbar_96x32.png")));
-		TextureRegion[][] sheet = healthBars.split(96, 32);
-		hud.addHealthBar(new HealthBar(sheet[0][0], 75, 50));
-		hud.addHealthBar(new HealthBar(sheet[1][0], 450, 450));
+		loadTextures();
 		
+		gsm = new GSM();
+		
+		ff = new FontFactory(res.getTexture("font"));
+		bg = new Background(res.getTexture("bg"), 0, 0);
+		hud = new HUD(gsm);
+		hud.addHealthBar(new HealthBar(res.getTexture("healthbar1"), 16, -16));
+		hud.addHealthBar(new HealthBar(res.getTexture("healthbar2"), WIDTH * .5625f + 12, HEIGHT - 2.25f *  ADJUSTED_TILE_SIZE));
+		hud.correctHealthBar();
 		
 		sb = new SpriteBatch();
 		
-		gsm = new GSM();
+		
 		gsm.push(new MenuState(gsm));
 	}
 
@@ -56,5 +58,16 @@ public class YouAndMe extends ApplicationAdapter {
 		gsm.peek().handleInput();
 		gsm.peek().update(Gdx.graphics.getDeltaTime());
 		gsm.peek().render(sb);
+	}
+	
+	private void loadTextures() {
+		res = new Resources();
+		res.loadTexture("font", "fonts/font1_16.png");
+		res.loadTexture("bg", "youandme_clouds_200x150.png");
+		res.loadTexture("hearts", "youandme_hearts_32.png");
+		res.loadTexture("title", "youandme_title_192x32.png");
+		res.loadPartitionedTexture("healthbar1", "youandme_healthbar_96x32.png", 96, 32, 0, 0);
+		res.loadPartitionedTexture("healthbar2", "youandme_healthbar_96x32.png", 96, 32, 1, 0);
+		res.loadPartitionedTexture("hearttransition", "youandme_hearts_32.png", 32, 32, 6, 4);
 	}
 }

@@ -67,13 +67,14 @@ public class LevelReader {
 		
 		debugIndex = 1;
 		LevelReader.level = level;
+		System.out.println("Loading level " + level);
 		
 		base = new Array<GameTile>();
 		walls = new Array<GameTile>();
 		border = new Array<GameTile>();
 		
 		//create the layers
-		populateLayer(map, base, "base", -1);
+		populateLayer(map, base, "base", C.UNDEFINED);
 		populateLayer(map, walls, "walls", C.WALL_REGULAR);
 		populateLayer(map, border, "border", C.WALL_BORDER);
 		
