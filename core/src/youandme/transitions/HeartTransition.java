@@ -15,8 +15,8 @@ public class HeartTransition extends Transition {
 	private float timer;
 	private float timerMax = 1;
 	
-	public HeartTransition(TextureRegion sheet) {
-		tr = sheet.split(32, 32)[6][4];
+	public HeartTransition(TextureRegion tr) {
+		this.tr = tr;
 		x = YouAndMe.WIDTH / 2;
 		y = YouAndMe.HEIGHT / 2;
 		timer = timerMax;

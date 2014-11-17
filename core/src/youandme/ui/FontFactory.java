@@ -31,21 +31,19 @@ public class FontFactory {
 				c += 27;
 				spr = new Sprite(sheet[c / cols][c % cols]);
 			} else if (c == ' ') {
-				spr = new Sprite(sheet[26 / cols][26 % cols]);
+				spr = new Sprite(sheet[31 / cols][31 % cols]);
 			} else if (c == '.') {
-				spr = new Sprite(sheet[37 / cols][37 % cols]);
+				spr = new Sprite(sheet[26 / cols][26 % cols]);
 			} else if (c == '!') {
-				spr = new Sprite(sheet[38 / cols][38 % cols]);
-			} else if (c == ':') {
-				spr = new Sprite(sheet[39 / cols][39 % cols]);
-			} else if (c == '-') {
-				spr = new Sprite(sheet[40 / cols][40 % cols]);
+				spr = new Sprite(sheet[27 / cols][27 % cols]);
 			} else if (c == '?' ){
-				spr = new Sprite(sheet[41 / cols][41 % cols]);
-			} else if (c == '&') {
-				spr = new Sprite(sheet[42 / cols][42 % cols]);
+				spr = new Sprite(sheet[28 / cols][28 % cols]);
+			} else if (c == ':') {
+				spr = new Sprite(sheet[29 / cols][29 % cols]);
+			} else if (c == ',') {
+				spr = new Sprite(sheet[30 / cols][30 % cols]);
 			} else {
-				spr = new Sprite(sheet[41 / cols][41 % cols]);
+				spr = new Sprite(sheet[28 / cols][28 % cols]);
 			}
 			
 			if (spr != null) {
@@ -60,14 +58,15 @@ public class FontFactory {
 		return FONT_SIZE * length * scale;
 	}
 	
-	public void render(SpriteBatch sb, Sprite[] sprites, float x, float y, float scale) {
+	public void render(SpriteBatch sb, Sprite[] sprites, float x, float y, float scale, float alpha) {
 		float currx = 0;
 		float offx = width(sprites.length, scale) / 2;
 		sb.begin();
 		for (Sprite spr : sprites) {
+			spr.setScale(scale, scale);
+			spr.setAlpha(alpha);
 			spr.setX(x - offx + width(1, scale) / 4 + currx);
 			spr.setY(y - width(1, scale) / 2);
-			spr.setScale(scale, scale);
 			spr.draw(sb);
 			currx += width(1, scale);
 		}

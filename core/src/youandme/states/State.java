@@ -10,7 +10,7 @@ public abstract class State {
 
 	protected GSM gsm;
 	protected Vector3 mouse;
-	protected OrthographicCamera camera;
+	public static OrthographicCamera camera;
 	
 	public State(GSM gsm) {
 		this.gsm = gsm;
