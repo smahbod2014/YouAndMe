@@ -26,10 +26,12 @@ public class FontFactory {
 			if (c >= 65 && c <= 90) {
 				c -= 65;
 				spr = new Sprite(sheet[c / cols][c % cols]);
-			} else if (c >= 48 && c <= 57) {
-				c -= 48;
-				c += 27;
+			} else if (c >= 49 && c <= 57) {
+				c -= 49;
+				c += 39;
 				spr = new Sprite(sheet[c / cols][c % cols]);
+			} else if (c == '0') {
+				spr = new Sprite(sheet[48 / cols][48 % cols]);
 			} else if (c == ' ') {
 				spr = new Sprite(sheet[31 / cols][31 % cols]);
 			} else if (c == '.') {

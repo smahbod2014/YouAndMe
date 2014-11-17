@@ -93,7 +93,7 @@ public class HUD {
 		}
 		
 		healthBars.get(1).correctBarLocation();
-		levelIndicator.setText("Level: " + LevelReader.level);
+		levelIndicator.setText("Level:" + LevelReader.level);
 		clearSelections();
 	}
 	

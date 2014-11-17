@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class HealthBar {
 
-	private final int MAX_HITS = 5;
+	private final int MAX_HITS = 100;
 	private final float maxBarWidth;
 	private TextureRegion tr;
 	private ShapeRenderer sr;

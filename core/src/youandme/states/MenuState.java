@@ -46,7 +46,7 @@ public class MenuState extends State {
 			for (TextButton tb : buttons) {
 				if(tb.contains(mouse.x, mouse.y)) {
 					if (tb.id == C.BUTTON_PLAY) {
-						gsm.set(new TransitionState(gsm, this, new PlayState(gsm, 5), new HeartTransition(YouAndMe.res.getTexture("hearttransition"))));
+						gsm.set(new TransitionState(gsm, this, new PlayState(gsm, 6), new HeartTransition(YouAndMe.res.getTexture("hearttransition"))));
 					} else if (tb.id == C.BUTTON_QUIT) {
 						Gdx.app.exit();
 					}
